@@ -78,24 +78,23 @@ for result in results['matches']:
     for attr in return_attrs:
         # If the host has the attribute
         if host_info.get(attr):
-            if type(host_info) is list:
+            print(attr + ': ' + str(host_info.get(attr)))
+            if type(host_info[attr]) is list:
                 attr_val = [str(v) for v in host_info[attr]]
             else:
                 attr_val = host_info[attr]
-            # Filter out stuff
-            ret_val[ip][attr] = attr_val
-            if attr in sho_filter.keys():
-                for i_filter in sho_filter[attr]:
-                    # If the filter value isn't in the host info, *thicc brooklyn accent* FOGGETTA BOUTIT
-                    if i_filter not in attr_val:
-                        del(ret_val[ip])
-            else:
+            # Filter out stuff, only enters this loop if all current attribute requirements met
+            if ret_val.get(ip) is not None:
                 ret_val[ip][attr] = attr_val
+                if attr in sho_filter.keys():
+                    for i_filter in sho_filter[attr]:
+                        # If the filter value isn't in the host info, *thicc brooklyn accent* FOGGETTA BOUTIT
+                        if i_filter not in attr_val:
+                            del(ret_val[ip])
         else:
             ret_val[ip][attr] = None
-        print(attr + ': ' + str(host_info.get(attr)))
 
-print("\nMatches: ")
+print("Matches: ")
 pprint.pprint(ret_val)
 
 if args.output:
