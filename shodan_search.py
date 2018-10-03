@@ -72,7 +72,6 @@ for result in results['matches']:
     sleep(1)
     ip = result['ip_str']
     host_info = s.host(ip)
-    print(host_info.keys())
     ret_val[ip] = {}
     print('IP: ' + str(result['ip_str']))
     # Get specified return attributes
