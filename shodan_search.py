@@ -83,13 +83,16 @@ for result in results['matches']:
                 attr_val = [str(v) for v in host_info[attr]]
             else:
                 attr_val = host_info[attr]
-            # Filter out stuff, only enters this loop if all current attribute requirements met
+            # Filter out stuff, only enters this loop if all previous attribute filters met
             if ret_val.get(ip) is not None:
                 ret_val[ip][attr] = attr_val
                 if attr in sho_filter.keys():
+                    delete = True
                     for i_filter in sho_filter[attr]:
                         # If the filter value isn't in the host info, *thicc brooklyn accent* FOGGETTA BOUTIT
-                        if i_filter not in attr_val:
+                        if i_filter in attr_val:
+                            delete = False
+                    if delete:
                             del(ret_val[ip])
         else:
             ret_val[ip][attr] = None
