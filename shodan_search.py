@@ -48,8 +48,10 @@ conf = loadConfig(config_path)
 api_key = conf.get('API','API_KEY')
 
 # Set up shodan module
-
-s = shodan.Shodan(api_key)
+try:
+    s = shodan.Shodan(api_key)
+except Exception as e:
+    print(e)
 
 if args.query.split(':')[0] == 'scan':
     s.scan(args.query.split(':')[1])
