@@ -74,7 +74,8 @@ try:
     if args.filter:
         (attr,val) = args.filter.split(':')
         sho_filter[attr] = val.split(',')
-        return_attrs.append(attr)
+        if attr not in return_attrs:
+            return_attrs.append(attr)
 except Exception as e:
     print("Malformed filter")
     exit()
