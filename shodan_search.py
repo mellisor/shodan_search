@@ -63,8 +63,21 @@ return_attrs = conf.get('SEARCH','default_attributes').split(',')
 if args.attributes or args.sattributes:
     if args.sattributes:
         return_attrs = args.sattributes.split(',')
+    elif args.attributes == 'all':
+        return_attrs = 'all'
     else:
         return_attrs.extend(args.attributes.split(','))
+
+try:
+    # Parse filtered attributes
+    sho_filter = {}
+    if args.filter:
+        (attr,val) = args.filter.split(':')
+        sho_filter[attr] = val.split(',')
+        return_attrs.append(attr)
+except Exception as e:
+    print("Malformed filter")
+    exit()
 
 if not args.quiet:
     print("Returning: " + str(return_attrs))
@@ -76,17 +89,13 @@ if args.query:
 results = s.search(query)
 ret_val = {}
 
-# Parse filtered attributes
-sho_filter = {}
-if args.filter:
-    sho_split = args.filter.split(':')
-    sho_filter[sho_split[0]] = sho_split[1].split(',')
-
 # Get host info
 for result in results['matches']:
     sleep(1)
     ip = result['ip_str']
     host_info = s.host(ip)
+    if return_attrs == 'all':
+        return_attrs = host_info.keys()
     ret_val[ip] = {}
     if args.verbose:
         print('\nIP: ' + str(result['ip_str']))
@@ -99,7 +108,7 @@ for result in results['matches']:
             if type(host_info[attr]) is list:
                 attr_val = [str(v) for v in host_info[attr]]
             else:
-                attr_val = host_info[attr]
+                attr_val = [host_info[attr]]
             # Filter out stuff, only enters this loop if all previous attribute filters met
             if ret_val.get(ip) is not None:
                 ret_val[ip][attr] = attr_val
