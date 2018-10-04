@@ -43,6 +43,10 @@ api_key = conf.get('API','API_KEY')
 
 s = shodan.Shodan(api_key)
 
+if args.query.split(':')[0] == 'scan':
+    s.scan(args.query.split(':')[1])
+    exit()
+
 return_attrs = conf.get('SEARCH','default_attributes').split(',')
 
 # Parse return attributes
