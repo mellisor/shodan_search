@@ -5,3 +5,10 @@ Also add the attributes you want to the config file, comma seperated (e.g. ports
 EX:
 
 ./shodan_search net:64.233.177.105 -a latitude,longitude -f ports:80
+./shodan_search net:64.233.177.105 -a all -f ports:80,443
+
+You can also request an IP scan
+
+EX:
+
+./shodan_search scan:64.233.177.105

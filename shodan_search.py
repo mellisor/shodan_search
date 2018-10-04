@@ -63,7 +63,7 @@ return_attrs = conf.get('SEARCH','default_attributes').split(',')
 if args.attributes or args.sattributes:
     if args.sattributes:
         return_attrs = args.sattributes.split(',')
-    elif args.attributes == 'all':
+    elif args.attributes.lower() == 'all':
         return_attrs = 'all'
     else:
         return_attrs.extend(args.attributes.split(','))
