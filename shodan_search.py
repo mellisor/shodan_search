@@ -113,10 +113,10 @@ for result in results['matches']:
                             del(ret_val[ip])
         else:
             ret_val[ip][attr] = None
-        if ret_val.get(ip) and not args.quiet and not args.verbose:
-            print('\nIP: ' + ip)
-            for key in ret_val[ip]:
-                print('\t' + key + ': ' + str(ret_val[ip][key]))
+    if ret_val.get(ip) and not args.quiet and not args.verbose:
+        print('\nIP: ' + ip)
+        for key in ret_val[ip]:
+            print('\t' + key + ': ' + str(ret_val[ip][key]))
 
 if not args.quiet:
     print("\nMatches: ")
