@@ -87,7 +87,7 @@ for result in results['matches']:
     host_info = s.host(ip)
     ret_val[ip] = {}
     if args.verbose:
-        print('IP: ' + str(result['ip_str']))
+        print('\nIP: ' + str(result['ip_str']))
     # Get specified return attributes
     for attr in return_attrs:
         # If the host has the attribute
