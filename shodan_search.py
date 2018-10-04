@@ -78,7 +78,7 @@ for result in results['matches']:
     for attr in return_attrs:
         # If the host has the attribute
         if host_info.get(attr):
-            print(attr + ': ' + str(host_info.get(attr)))
+            print('\t' + attr + ': ' + str(host_info.get(attr)))
             if type(host_info[attr]) is list:
                 attr_val = [str(v) for v in host_info[attr]]
             else:
@@ -96,6 +96,7 @@ for result in results['matches']:
                             del(ret_val[ip])
         else:
             ret_val[ip][attr] = None
+    print()
 
 print("Matches: ")
 pprint.pprint(ret_val)
