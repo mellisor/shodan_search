@@ -93,7 +93,7 @@ for result in results['matches']:
                 if attr in sho_filter.keys():
                     delete = True
                     for i_filter in sho_filter[attr]:
-                        # If the filter value isn't in the host info, *thicc brooklyn accent* FOGGETTA BOUTIT
+                        # If the filter value isn't in the host info, *thicc brooklyn accent* FOGGETTABOUTIT
                         if i_filter in attr_val:
                             delete = False
                     if delete:
