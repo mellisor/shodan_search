@@ -120,7 +120,7 @@ for result in results['matches']:
                             delete = False
                     if delete:
                             del(ret_val[ip])
-        else:
+        elif ret_val.get(ip):
             ret_val[ip][attr] = None
     if ret_val.get(ip) and not args.quiet and not args.verbose:
         print('\nIP: ' + ip)
