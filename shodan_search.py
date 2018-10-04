@@ -18,10 +18,18 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('query',help='Shodan query to perform')
 
+verbose = parser.add_mutually_exclusive_group()
+
+verbose.add_argument('-v','--verbose',dest='verbose',action='store_const',const=True,default=False,help='Prints all found hosts out to console')
+
+verbose.add_argument('-q','--quiet',dest='quiet',action='store_const',const=True,default=False,help='Don\'t print anything out to the console')
+
 attrs = parser.add_mutually_exclusive_group()
 
 attrs.add_argument('-a','--attributes',dest='attributes',help='List of attributes to return, comma seperated')
 attrs.add_argument('-s','--specific_attributes',dest='sattributes',help='Return only these attributes, comma seperated')
+
+
 
 # Output arguments
 parser.add_argument('-f','--filter',dest='filter',help='Filter to apply. Useful if you don\'t have an upgraded shodan account. Only use one filter at a time because I\'m not smart enough. Also must be an iterable because I\'m dumb. \nFormat: -f ports:80,443')
@@ -56,7 +64,8 @@ if args.attributes or args.sattributes:
     else:
         return_attrs.extend(args.attributes.split(','))
 
-print(return_attrs)
+if not args.quiet:
+    print("Returning: " + str(return_attrs))
 
 # Make query
 if args.query:
@@ -77,12 +86,14 @@ for result in results['matches']:
     ip = result['ip_str']
     host_info = s.host(ip)
     ret_val[ip] = {}
-    print('IP: ' + str(result['ip_str']))
+    if args.verbose:
+        print('IP: ' + str(result['ip_str']))
     # Get specified return attributes
     for attr in return_attrs:
         # If the host has the attribute
         if host_info.get(attr):
-            print('\t' + attr + ': ' + str(host_info.get(attr)))
+            if args.verbose:
+                print('\t' + attr + ': ' + str(host_info.get(attr)))
             if type(host_info[attr]) is list:
                 attr_val = [str(v) for v in host_info[attr]]
             else:
@@ -100,10 +111,15 @@ for result in results['matches']:
                             del(ret_val[ip])
         else:
             ret_val[ip][attr] = None
-    print()
+        if ret_val.get(ip) and not args.quiet and not args.verbose:
+            print('IP: ' + ip)
+            for key in ret_val[ip]:
+                print('\t' + key + ': ' + str(ret_val[ip][key]))
+            print()
 
-print("Matches: ")
-pprint.pprint(ret_val)
+if not args.quiet:
+    print("\nMatches: ")
+    pprint.pprint(ret_val)
 
 if args.output:
     with open(args.output,'w+') as f:
