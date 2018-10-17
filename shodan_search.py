@@ -7,6 +7,7 @@ import shodan
 import json
 import pprint
 from time import sleep
+import csv
 
 def loadConfig(path):
     conf = configparser.ConfigParser()
@@ -34,6 +35,7 @@ attrs.add_argument('-s','--specific_attributes',dest='sattributes',help='Return 
 # Output arguments
 parser.add_argument('-f','--filter',dest='filter',help='Filter to apply. Useful if you don\'t have an upgraded shodan account. Only use one filter at a time because I\'m not smart enough. Also must be an iterable because I\'m dumb. \nFormat: -f ports:80,443')
 parser.add_argument('-o','--output',dest='output',help='File to output json to')
+parser.add_argument('-c','--csv',dest='csv',help='Output to csv file')
 
 args = parser.parse_args()
 
@@ -135,3 +137,15 @@ if not args.quiet:
 if args.output:
     with open(args.output,'w+') as f:
         json.dump(ret_val,f)
+
+if args.csv:
+    headers = return_attrs
+    headers.insert(0,'ip')
+    with open(args.csv,'w+') as f:
+        writer = csv.DictWriter(f, fieldnames=headers)
+        writer.writeheader()
+        for ip in ret_val.keys():
+            ret_val[ip]['ip'] = ip
+            writer.writerow(ret_val[ip])
+
+    
