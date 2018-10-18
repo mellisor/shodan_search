@@ -142,7 +142,7 @@ if args.csv:
     headers = return_attrs
     headers.insert(0,'ip')
     with open(args.csv,'w+') as f:
-        writer = csv.DictWriter(f, fieldnames=headers)
+        writer = csv.DictWriter(f, fieldnames=headers,lineterminator='\n')
         writer.writeheader()
         for ip in ret_val.keys():
             ret_val[ip]['ip'] = ip
