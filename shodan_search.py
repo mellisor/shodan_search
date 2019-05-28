@@ -20,22 +20,19 @@ parser = argparse.ArgumentParser()
 parser.add_argument('query',help='Shodan query to perform')
 
 verbose = parser.add_mutually_exclusive_group()
-
 verbose.add_argument('-v','--verbose',dest='verbose',action='store_const',const=True,default=False,help='Prints all found hosts out to console')
-
 verbose.add_argument('-q','--quiet',dest='quiet',action='store_const',const=True,default=False,help='Don\'t print anything out to the console')
 
 attrs = parser.add_mutually_exclusive_group()
-
 attrs.add_argument('-a','--attributes',dest='attributes',help='List of attributes to return, comma seperated')
 attrs.add_argument('-s','--specific_attributes',dest='sattributes',help='Return only these attributes, comma seperated')
 
-
-
 # Output arguments
-parser.add_argument('-f','--filter',dest='filter',help='Filter to apply. Useful if you don\'t have an upgraded shodan account. Only use one filter at a time because I\'m not smart enough. Also must be an iterable because I\'m dumb. \nFormat: -f ports:80,443')
+parser.add_argument('-f','--filter',dest='filter',help='Filter to apply. Useful if you don\'t have an upgraded shodan account. \nFormat: -f ports:80,443')
 parser.add_argument('-o','--output',dest='output',help='File to output json to')
 parser.add_argument('-c','--csv',dest='csv',help='Output to csv file')
+
+parser.add_argument('--sleep',type=float,default=1.0)
 
 args = parser.parse_args()
 
@@ -92,13 +89,26 @@ if args.query:
 results = s.search(query)
 ret_val = {}
 
+if args.csv:
+    f = open(args.csv,'w+')
+    if return_attrs != 'all':
+        headers = return_attrs
+        headers.insert(0,'ip')
+        writer = csv.DictWriter(f, fieldnames=headers,lineterminator='\n')
+        writer.writeheader()
+
 # Get host info
 for result in results['matches']:
-    sleep(1)
+    sleep(args.sleep)
     ip = result['ip_str']
     host_info = s.host(ip)
     if return_attrs == 'all':
-        return_attrs = host_info.keys()
+        return_attrs = list(host_info.keys())
+        if args.csv:
+            headers = return_attrs
+            headers.insert(0,'ip')
+            writer = csv.DictWriter(f, fieldnames=headers,lineterminator='\n')
+            writer.writeheader()
     ret_val[ip] = {}
     if args.verbose:
         print('\nIP: ' + str(result['ip_str']))
@@ -129,6 +139,9 @@ for result in results['matches']:
         print('\nIP: ' + ip)
         for key in ret_val[ip]:
             print('\t' + key + ': ' + str(ret_val[ip][key]))
+    ret_val[ip]['ip'] = ip
+    if args.csv:
+        writer.writerow(ret_val[ip])
 
 if not args.quiet:
     print("\nMatches: ")
@@ -139,13 +152,6 @@ if args.output:
         json.dump(ret_val,f)
 
 if args.csv:
-    headers = return_attrs
-    headers.insert(0,'ip')
-    with open(args.csv,'w+') as f:
-        writer = csv.DictWriter(f, fieldnames=headers,lineterminator='\n')
-        writer.writeheader()
-        for ip in ret_val.keys():
-            ret_val[ip]['ip'] = ip
-            writer.writerow(ret_val[ip])
+    f.close()
 
     

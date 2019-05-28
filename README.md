@@ -1,5 +1,5 @@
 Run the setup first if you're on ubuntu
-Just add your api key to the config file and the script should work. Or not. It's 2AM and I'm going to bed.
+Just add your api key to the config file and the script should work.
 Also add the attributes you want to the config file, comma seperated (e.g. ports,last_update)
 
 EX:
@@ -15,3 +15,5 @@ You can also request an IP scan
 EX:
 
 ./shodan_search scan:64.233.177.105
+
+UPDATE: DON'T USE shodan_search, USE SHODAN_CLIENT, it's much more useful
