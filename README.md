@@ -1,4 +1,4 @@
-To run, add your api key to search.conf
+# Installation
 
 If pipenv is installed, run 
 `pipenv shell` 
@@ -7,6 +7,10 @@ then
 
 Otherwise, run
 `pip3 install shodan`
+
+# Running
+
+First, add your api key to search.conf in place of YOUR_API_KEY
 
 For information on how to run the client, run
 `./shodan_client.py -h`
