@@ -3,11 +3,8 @@
 import shodan
 import pprint
 import collections
-import netaddr
 from time import sleep
-
-def match_test(result):
-    print(result)
+from configparser import ConfigParser
 
 class Shodan_Client(shodan.Shodan):
 
@@ -104,14 +101,16 @@ if __name__ == "__main__":
 
     parser.add_argument('range',help="IP range to scan")
     parser.add_argument('-a','--attributes',default='ports',help="Attributes to return")
-    parser.add_argument('--ports',action='store_true',help="Only return ports")
-    parser.add_argument('-f','--filter',default=None,help="Filter by attributes. Ex: -a ports:22,3389")
-    parser.add_argument('-o','--output',help="Output raw json file")
-    parser.add_argument('-c','--csv',help="Output CSV file")
+    parser.add_argument('--ports',action='store_true',help="Only return ports, much faster but can only filter by ports")
+    parser.add_argument('-f','--filter',default=None,help="Filter by attributes. Ex: -f ports:22,3389")
+    parser.add_argument('-c','--csv',help="Output CSV file. EX: -c out.csv")
     parser.add_argument('-p','--pages',default=1,type=int,help="Number of pages to get results from")
     args = parser.parse_args()
 
-    s = Shodan_Client("YOUR_API_KEY_HERE")
+    conf = ConfigParser()
+    conf.read('search.conf')
+    api_key = conf.get('API','API_KEY')
+    s = Shodan_Client(api_key)
 
     fltr = None
     if args.filter:

@@ -1,19 +1,15 @@
-Run the setup first if you're on ubuntu
-Just add your api key to the config file and the script should work.
-Also add the attributes you want to the config file, comma seperated (e.g. ports,last_update)
+To run, add your api key to search.conf
 
-EX:
+If pipenv is installed, run 
+`pipenv shell` 
+then 
+`pipenv install`
 
-./shodan_search net:64.233.177.105 -a latitude,longitude -f ports:80
+Otherwise, run
+`pip3 install shodan`
 
-EX:
+For information on how to run the client, run
+`./shodan_client.py -h`
 
-./shodan_search net:64.233.177.105 -a all -f ports:80,443
-
-You can also request an IP scan
-
-EX:
-
-./shodan_search scan:64.233.177.105
-
-UPDATE: DON'T USE shodan_search, USE SHODAN_CLIENT, it's much more useful
+NOTE:
+	Searching each individual ip takes 1 second based on api restrictions.  If you only need a list of open ports, use the **--ports** flag
